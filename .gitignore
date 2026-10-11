@@ -5,6 +5,14 @@ node_modules/
 dist/
 dist-ssr/
 
+# Capacitor native platform (generated in CI by `cap add android`)
+/android/
+
+# Android signing material (never commit)
+*.keystore
+*.jks
+release.keystore
+
 # Logs
 logs/
 *.log
