@@ -1,10 +1,12 @@
 apply plugin: 'com.android.application'
 
 // Release 签名配置：凭据全部来自 CI 环境变量 / GitHub Secrets，密钥文件不入库
-def keystoreFilePath = System.getenv('KEYSTORE_FILE_PATH') ?: 'release.keystore'
-def keystorePassword = System.getenv('KEYSTORE_PASSWORD')
-def keyAlias = System.getenv('KEY_ALIAS') ?: 'promptopt'
-def keyPassword = System.getenv('KEY_PASSWORD')
+// 注意：变量名不可与 signingConfig 的 DSL 方法（storePassword/keyAlias/keyPassword）同名，
+// 否则 Groovy 会发生遮蔽并报 String.call() 错误。
+def ksFilePath = System.getenv('KEYSTORE_FILE_PATH') ?: 'release.keystore'
+def ksStorePassword = System.getenv('KEYSTORE_PASSWORD')
+def ksKeyAlias = System.getenv('KEY_ALIAS') ?: 'promptopt'
+def ksKeyPassword = System.getenv('KEY_PASSWORD')
 
 android {
     namespace "com.kabsvshbab.promptoptimizer"
@@ -24,11 +26,11 @@ android {
     }
     signingConfigs {
         release {
-            if (keystorePassword != null) {
-                storeFile file(keystoreFilePath)
-                storePassword keystorePassword
-                keyAlias keyAlias
-                keyPassword keyPassword
+            if (ksStorePassword != null) {
+                storeFile file(ksFilePath)
+                storePassword ksStorePassword
+                keyAlias ksKeyAlias
+                keyPassword ksKeyPassword
             }
         }
     }
@@ -36,7 +38,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (keystorePassword != null) {
+            if (ksStorePassword != null) {
                 signingConfig signingConfigs.release
             }
         }
